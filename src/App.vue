@@ -40,17 +40,18 @@
     Find
     <span
       class="bg-clip-text text-transparent bg-gradient-to-r from-green-600 via-green-500 to-green-400"
-      >the website</span
+      >the domains</span
     >
   </h1>
   <SearchBar @search="search" />
-  <RepositoryList :search-options="searchOptions" />
+  <RepositoryList :search-options="domains" />
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, watch } from "vue";
 import RepositoryList from "./components/RepositoryList.vue";
 import SearchBar from "./components/SearchBar.vue";
+import axios from "axios";
 
 const isDark = ref(true);
 document.documentElement.classList.add("dark");
@@ -69,6 +70,14 @@ const searchOptions = reactive({
 const search = (query: string) => {
   searchOptions.query = query;
 };
+
+const domains = ref();
+
+axios
+  .get("https://urlscan.io/api/v1/search/?q=domain:ayyza.com")
+  .then(response => {
+    domains.value = response.data.results;
+  });
 </script>
 
 <style>
