@@ -44,12 +44,12 @@
     >
   </h1>
   <SearchBar @search="search" />
-  <RepositoryList :search-options="domains" />
+  <DomainsList :search-options="domains" />
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, watch } from "vue";
-import RepositoryList from "./components/RepositoryList.vue";
+import DomainsList from "./components/DomainsList.vue";
 import SearchBar from "./components/SearchBar.vue";
 import axios from "axios";
 

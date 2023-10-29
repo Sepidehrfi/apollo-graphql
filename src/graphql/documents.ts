@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client/core";
 
 const REPO_FRAGMENT = gql`
-  fragment repo on Repository {
+  fragment repo on Domains {
     id
     name
     url
@@ -22,7 +22,7 @@ const REPO_FRAGMENT = gql`
       color
       name
     }
-    repositoryTopics(first: 10) {
+    DomainsTopics(first: 10) {
       edges {
         node {
           topic {
@@ -35,8 +35,8 @@ const REPO_FRAGMENT = gql`
 `;
 
 export const ADD_STAR = gql`
-  mutation($repositoryId: ID!) {
-    addStar(input: { starrableId: $repositoryId }) {
+  mutation($DomainsId: ID!) {
+    addStar(input: { starrableId: $DomainsId }) {
       starrable {
         id
         viewerHasStarred
@@ -46,8 +46,8 @@ export const ADD_STAR = gql`
 `;
 
 export const REMOVE_STAR = gql`
-  mutation($repositoryId: ID!) {
-    removeStar(input: { starrableId: $repositoryId }) {
+  mutation($DomainsId: ID!) {
+    removeStar(input: { starrableId: $DomainsId }) {
       starrable {
         id
         viewerHasStarred
@@ -60,7 +60,7 @@ export const SEARCH_REPOS = gql`
   ${REPO_FRAGMENT}
 
   query SearchRepoQuery($query: String!, $limit: Int!) {
-    search(query: $query, type: REPOSITORY, first: $limit) {
+    search(query: $query, type: Domains, first: $limit) {
       edges {
         node {
           ...repo
