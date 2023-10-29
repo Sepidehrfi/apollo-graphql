@@ -36,37 +36,41 @@
       :style="`width: ${detailsWidth}`"
     >
       <div v-if="detailsDomain" class="flex justify-around">
-        <div>
-          <p class="mb-1 w-10/12 truncate">
+        <div class="my-3 ">
+          <p class="mb-1 truncate">
             <span class="font-bold"> ip :</span> {{ detailsDomain.ip }}
           </p>
-          <p class="mb-1 w-10/12 truncate">
+          <p class="mb-1  truncate">
             <span class="font-bold"> country :</span>
             {{ detailsDomain.country_name }}
           </p>
-          <p class="mb-1 w-10/12 truncate">
+          <p class="mb-1  truncate">
             <span class="font-bold"> region : </span>
             {{ detailsDomain.region_name }}
           </p>
-          <p class="mb-1 w-10/12 truncate">
+          <p class="mb-1 truncate">
             <span class="font-bold"> city : </span>
             {{ detailsDomain.city }}
           </p>
-          <p class="mb-1 w-10/12 truncate">
+          <p class="mb-1 truncate">
             <span class="font-bold"> continent : </span>
             {{ detailsDomain.continent_name }}
           </p>
         </div>
-        <img
+        <iframe
+          v-if="detailsDomain"
+          width="500"
+          height="170"
+          :src="
+            `https://maps.google.com/maps?q=${detailsDomain.latitude}, ${detailsDomain.longitude}&z=15&output=embed`
+          "
+          frameborder="0"
+          style="border:0"
+        ></iframe>
+        <!-- <img
           class="shadow-2xl ... h-30 w-30 inline-block mr-2"
           :src="detailsDomain.location.flag"
-        />
-        <div>
-          <Googlemap
-            :width="detailsDomain.latitude"
-            :height="detailsDomain.longitude"
-          />
-        </div>
+        /> -->
       </div>
     </div>
 
@@ -124,7 +128,6 @@
 <script lang="ts" setup>
 import { defineProps, ref } from "vue";
 import axios from "axios";
-import GoogleMap from "vue-google-maps-ui";
 
 const props = defineProps({
   Domains: {
@@ -139,31 +142,30 @@ const props = defineProps({
 
 const loading = ref(false);
 const detailsWidth = ref("1%");
-const detailsDomain = ref();
+const detailsDomain = ref(null);
 
 const toggleDetails = () => {
-  loading.value = true;
-  axios
-    .get(`https://api.apilayer.com/ip_to_location/${props.Domains.page.ip}`, {
-      headers: {
-        apikey: "Wpt5YuhCWDY723hVIZD8dOb4SqYzkP8q"
-      }
-    })
-    .then(response => {
-      loading.value = false;
-      console.log(response.data);
-      detailsDomain.value = response.data;
-      if (detailsWidth.value === "1%") detailsWidth.value = "75%";
-      else detailsWidth.value = "1%";
-    });
+  if (detailsDomain.value) {
+    detailsWidth.value = "1%";
+    detailsDomain.value = null;
+  } else {
+    loading.value = true;
+    axios
+      .get(`https://api.apilayer.com/ip_to_location/${props.Domains.page.ip}`, {
+        headers: {
+          apikey: "Wpt5YuhCWDY723hVIZD8dOb4SqYzkP8q"
+        }
+      })
+      .then(response => {
+        loading.value = false;
+        detailsDomain.value = response.data;
+        detailsWidth.value = "75%";
+      });
+  }
 };
 </script>
 
 <style scoped>
-/* .Domains {
-  border-left-width: 5.75rem;
-} */
-
 .metadata:not(:first-child)::before {
   content: "∙";
   margin: 0 0.375rem;
